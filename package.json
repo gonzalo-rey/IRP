@@ -1,0 +1,23 @@
+{
+  "name": "IRP",
+  "version": "1.0.0",
+  "description": "Image Recognition PoC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:gonzalo-rey/IRP.git"
+  },
+  "keywords": [
+    "image",
+    "recognition"
+  ],
+  "author": "Gonzalo M. Rey",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gonzalo-rey/IRP/issues"
+  },
+  "homepage": "https://github.com/gonzalo-rey/IRP"
+}
