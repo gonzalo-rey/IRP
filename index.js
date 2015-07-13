@@ -5,8 +5,6 @@ var fs = require('fs');
 var rest = require('restler');
 var util = require('util');
 
-var MAX_RETRY = 5;
-
 function sendImage(filepath) {
   var stats = fs.statSync(filepath);
   //console.log(fs.statSync(filepath).size);
@@ -22,29 +20,26 @@ function sendImage(filepath) {
     }
   }).on('complete', function(data) {
     console.log('token: ' + data.token);
-    getImage(data.token, MAX_RETRY);
+    getImage(data.token);
   }).on('error', function(err, response) {
     console.log('Error sending the image:' + err);
   });
 }
 
-function getImage(token, retry) {
-  if (typeof retry === 'undefined') {
-    retry = 0;
-  }
-
+function getImage(token) {
   rest.get('http://api.cloudsightapi.com/image_responses/' + token, {
     headers: {'Authorization': 'CloudSight Y0KnZccC0BCLmyDLSFH8XA'}
   }).on('complete', function(data) {
     if (data.status == 'not completed') {
-      if (retry > 0) {
-        getImage(token, retry - 1);
-      } else {
-        console.log(data);
-      }
+        process.stdout.write(".");
+        setTimeout(function(){
+          getImage(token);
+        }, 1000);
     } else if (data.status == 'completed') {
       console.log('name: ' + data.name);
       getCategory(data.name);
+    } else {
+      console.log(data);
     }
   }).on('error', function(err, response) {
     console.log('Error obtaining the image response:' + err);
@@ -53,9 +48,9 @@ function getImage(token, retry) {
 
 function getCategory(searchTerm) {
   rest.get('http://api-v2.olx.com/items?location=www.olx.com&searchTerm=' + searchTerm
-  ).on('complete', function(data) {
-    if(data[0] != 'undefined') {
-      console.log(data[0].category.id);
+  ).on('complete', function(response) {
+    if(response.data.length != 0) {
+      console.log('category: ' + response.data[0].category.id);
     } else {
       console.log("no category found");
     }
